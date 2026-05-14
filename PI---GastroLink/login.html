@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastroLink - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="mobile-container">
+        <div class="login-header">
+            <h1 class="logo">GL.</h1>
+            <p class="tagline">Conectando sabores e influência</p>
+        </div>
+
+        <div class="selection-container" id="selection-box">
+            <p class="instruction">Como você deseja entrar?</p>
+            <button class="btn-choice restaurante" onclick="showForm('restaurante')">
+                <span class="icon">🏪</span> Sou Restaurante
+            </button>
+            <button class="btn-choice usuario" onclick="showForm('usuario')">
+                <span class="icon">🤳</span> Sou Influenciador / Usuário
+            </button>
+        </div>
+
+        <!-- Formulário de Login (Oculto inicialmente) -->
+        <div class="form-container" id="login-form" style="display: none;">
+            <button class="back-link" onclick="hideForm()">← Voltar</button>
+            <h2 id="form-title">Login</h2>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+            
+            <p class="footer-text">Não tem uma conta? <a href="#">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <script>
+        function showForm(tipo) {
+            const selectionBox = document.getElementById('selection-box');
+            const loginForm = document.getElementById('login-form');
+            const formTitle = document.getElementById('form-title');
+
+            selectionBox.style.display = 'none';
+            loginForm.style.display = 'block';
+
+            if (tipo === 'restaurante') {
+                formTitle.innerText = 'Login Restaurante';
+            } else {
+                formTitle.innerText = 'Login Usuário';
+            }
+        }
+
+        function hideForm() {
+            document.getElementById('selection-box').style.display = 'block';
+            document.getElementById('login-form').style.display = 'none';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            // Simulação de login para a POC
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
