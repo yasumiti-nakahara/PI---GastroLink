@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastroLink - Restaurante</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+    <div class="mobile-container">
+
+        <nav class="navbar">
+            <a href="index.html" class="logo">GL.</a>
+            <div class="search-box">
+                <input type="text" placeholder="Buscar restaurante...">
+            </div>
+            <img src="https://i.pravatar.cc/100?img=47" alt="Perfil" class="profile-pic" onclick="openModal()">
+        </nav>
+        
+        <a href="index.html" class="back-button">← Voltar</a>
+
+        <div class="carousel">
+            <img id="foto-1" src="" alt="Foto 1" class="carousel-item">
+            <img id="foto-2" src="" alt="Foto 2" class="carousel-item">
+        </div>
+
+        <main class="restaurant-info">
+            <h1 id="nome-restaurante" class="restaurant-name">Carregando...</h1>
+            <div id="categoria-nota" class="rating">...</div>
+            
+            <hr class="divider">
+
+            <h2 class="section-title">Sobre nós</h2>
+            <p id="bio-restaurante" class="bio">Carregando informações...</p>
+        </main>
+
+        <div class="bottom-bar">
+            <button class="btn-colaborar" onclick="window.location.href='formulario.html'">Linkar</button>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Nosso "Banco de Dados" falso
+        const bancoDeDados = {
+            burger: {
+                nome: "Burger Prime",
+                categoria: "Hamburgueria • 4.8 ★",
+                bio: "Bem-vindo ao Burger Prime! Somos especialistas em hambúrgueres artesanais defumados. Buscamos parceiros e influenciadores apaixonados por comida de verdade para criar conteúdos incríveis, divulgar nosso espaço e crescermos juntos. Venha fazer uma parceria com a gente e leve muito sabor para seus seguidores!",
+                fotos: [
+                    "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80"
+                ]
+            },
+            sushi: {
+                nome: "Tokyo Sushi",
+                categoria: "Japonesa • 4.9 ★",
+                bio: "O melhor da culinária oriental tradicional e contemporânea. Queremos parcerias com criadores de conteúdo que amam a cultura e a gastronomia japonesa. Vamos colaborar e criar pratos virais?",
+                fotos: [
+                    "https://images.unsplash.com/photo-1579684947550-22e945225d9a?auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1611143660185-cbc9a4fac825?auto=format&fit=crop&w=500&q=80"
+                ]
+            },
+            pizza: {
+                nome: "Bella Napoli",
+                categoria: "Italiana • 4.7 ★",
+                bio: "A verdadeira pizza napolitana feita no forno a lenha. Estamos procurando perfis focados em lifestyle e gastronomia para mostrar o verdadeiro sabor da Itália aos seus seguidores.",
+                fotos: [
+                    "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=500&q=80"
+                ]
+            },
+            carnes: {
+                nome: "Steakhouse 99",
+                categoria: "Carnes • 4.5 ★",
+                bio: "Cortes nobres e grelha no ponto perfeito. Quer gravar vídeos mostrando aquele ponto suculento da carne? Entre em contato com a gente para uma parceria deliciosa!",
+                fotos: [
+                    "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80"
+                ]
+            }
+        };
+
+        // 2. Lê a URL (ex: restaurante.html?id=burger)
+        const parametrosDaUrl = new URLSearchParams(window.location.search);
+        const restauranteId = parametrosDaUrl.get('id');
+
+        // 3. Pega os dados no "banco"
+        const restaurante = bancoDeDados[restauranteId];
+
+        // 4. Preenche as informações na tela
+        if (restaurante) {
+            document.getElementById('nome-restaurante').innerText = restaurante.nome;
+            document.getElementById('categoria-nota').innerText = restaurante.categoria;
+            document.getElementById('bio-restaurante').innerText = restaurante.bio;
+            document.getElementById('foto-1').src = restaurante.fotos[0];
+            document.getElementById('foto-2').src = restaurante.fotos[1];
+        } else {
+            document.getElementById('nome-restaurante').innerText = "Restaurante não encontrado";
+            document.getElementById('bio-restaurante').innerText = "Verifique o link na Home e tente novamente.";
+        }
+    </script>
+</body>
+</html>

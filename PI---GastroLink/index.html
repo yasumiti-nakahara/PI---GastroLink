@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastroLink - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <nav class="navbar">
+            <a href="#" class="logo">GL.</a>
+            <div class="search-box">
+                <input type="text" placeholder="Buscar restaurante...">
+            </div>
+            <img src="https://i.pravatar.cc/100?img=47" alt="Perfil" class="profile-pic" onclick="openModal()">
+        </nav>
+
+        <main class="content">
+            <a href="restaurante.html?id=burger" class="card">
+                <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=300&q=80" alt="Hamburgueria" class="card-img">
+                <div class="card-info">
+                    <div class="card-title">Burger Prime</div>
+                    <div class="card-subtitle">Hamburgueria • 4.8 ★</div>
+                </div>
+            </a>
+            <a href="restaurante.html?id=sushi" class="card">
+                <img src="https://images.unsplash.com/photo-1579684947550-22e945225d9a?auto=format&fit=crop&w=300&q=80" alt="Sushi" class="card-img">
+                <div class="card-info">
+                    <div class="card-title">Tokyo Sushi</div>
+                    <div class="card-subtitle">Japonesa • 4.9 ★</div>
+                </div>
+            </a>
+            <a href="restaurante.html?id=pizza" class="card">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80" alt="Pizza" class="card-img">
+                <div class="card-info">
+                    <div class="card-title">Bella Napoli</div>
+                    <div class="card-subtitle">Italiana • 4.7 ★</div>
+                </div>
+            </a>
+             <a href="restaurante.html?id=carnes" class="card">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=300&q=80" alt="Carnes" class="card-img">
+                <div class="card-info">
+                    <div class="card-title">Steakhouse 99</div>
+                    <div class="card-subtitle">Carnes • 4.5 ★</div>
+                </div>
+            </a>
+        </main>
+        
+        <div id="modalPerfil" class="modal-overlay">
+            <div class="modal-wrapper">
+                <div class="modal-content">
+                    <button class="close-btn" onclick="closeModal()">×</button>
+                    
+                    <img src="https://i.pravatar.cc/100?img=47" alt="Sua Foto" class="modal-img">
+                    
+                    <input type="text" id="inputNome" class="modal-name-input" value="Cátia Borges" oninput="verificarMudanca()">
+                    
+                    <p class="modal-email">catia.borges@gastrolink.com</p>
+                    
+                    <button id="btnSalvar" class="btn-salvar" style="display: none;" onclick="salvarNome()">Salvar Alterações</button>
+                    
+                    <button class="btn-desconectar" onclick="window.location.href='login.html'">Desconectar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalPerfil');
+        const inputNome = document.getElementById('inputNome');
+        const btnSalvar = document.getElementById('btnSalvar');
+
+        // 1. Quando a página carrega, verifica se existe um nome salvo no navegador
+        // Se existir, atualiza o campo de texto. Se não, usa "Cátia Borges" por padrão.
+        const nomePadrao = "Cátia Borges";
+        const nomeSalvoNoNavegador = localStorage.getItem('gastrolinkNome');
+        
+        if (nomeSalvoNoNavegador) {
+            inputNome.value = nomeSalvoNoNavegador;
+        }
+
+        // 2. Funções de abrir e fechar o modal
+        function openModal() {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // 3. Função que fica checando se você digitou algo diferente do salvo
+        function verificarMudanca() {
+            const nomeAtualSalvo = localStorage.getItem('gastrolinkNome') || nomePadrao;
+            
+            // Se o que está escrito na tela for diferente do que está salvo na memória...
+            if (inputNome.value !== nomeAtualSalvo) {
+                btnSalvar.style.display = 'block'; // Mostra o botão verde
+            } else {
+                btnSalvar.style.display = 'none';  // Esconde o botão verde
+            }
+        }
+
+        // 4. Função para salvar o novo nome na memória do navegador
+        function salvarNome() {
+            localStorage.setItem('gastrolinkNome', inputNome.value);
+            btnSalvar.style.display = 'none'; // Esconde o botão verde
+            inputNome.blur(); // Tira o cursor de digitação (pisca-pisca) da tela
+        }
+    </script>
+</body>
+</html>
