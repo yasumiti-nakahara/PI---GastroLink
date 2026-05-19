@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GastroLink — Conectando Restaurantes e Influenciadores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .featured-restaurants {
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.featured-restaurants h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.featured-restaurants p {
+  color: var(--muted);
+  margin-bottom: 3rem;
+}
+
+.restaurant-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.restaurant-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+}
+
+.restaurant-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.restaurant-card h3 {
+  margin-top: 1rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.restaurant-card span {
+  display: block;
+  color: var(--muted);
+  margin: 1rem 0;
+}
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface2: #1f1f1f;
+      --border: #2a2a2a;
+      --accent: #e8813a;
+      --accent2: #3a7bd5;
+      --green: #3ecf8e;
+      --red: #e84040;
+      --text: #f0ece4;
+      --muted: #888;
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; min-height: 100vh; }
+    .page.active { display: flex; flex-direction: column; }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; background: var(--surface);
+      border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--accent); letter-spacing: -0.5px; }
+    .logo span { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .search-box {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.5rem 1rem; color: var(--text); font-family: 'DM Sans'; font-size: 0.9rem; width: 220px;
+    }
+    .search-box:focus { outline: none; border-color: var(--accent); }
+    .avatar-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      padding: 0.65rem 1.4rem; border-radius: 8px; border: none;
+      font-family: 'DM Sans'; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #d06d28; transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: var(--green); color: #0d0d0d; }
+    .btn-success:hover { background: #32b87b; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-outline { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: #fff; }
+    .btn-lg { padding: 0.85rem 2rem; font-size: 1rem; }
+    .btn-full { width: 100%; text-align: center; }
+
+    /* ── FORMS ── */
+    .form-group { margin-bottom: 1.2rem; }
+    label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.4rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+    input, select, textarea {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.7rem 1rem; color: var(--text);
+      font-family: 'DM Sans'; font-size: 0.95rem;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+    select option { background: var(--surface2); }
+    textarea { resize: vertical; min-height: 90px; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; transition: all 0.25s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(232,129,58,0.15); }
+    .card-img { width: 100%; height: 180px; object-fit: cover; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .card-body { padding: 1rem 1.2rem; }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .card-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.8rem; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 0.3rem; margin-bottom: 0.3rem; }
+    .tag-orange { background: rgba(232,129,58,0.15); color: var(--accent); }
+    .tag-blue { background: rgba(58,123,213,0.15); color: var(--accent2); }
+    .tag-green { background: rgba(62,207,142,0.15); color: var(--green); }
+
+    /* ── GRIDS ── */
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    /* ── LAYOUT CONTAINERS ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .layout-sidebar { display: grid; grid-template-columns: 240px 1fr; gap: 2rem; align-items: start; }
+    .sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 80px; }
+    .sidebar h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+    .filter-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; cursor: pointer; font-size: 0.9rem; }
+    .filter-item input { width: auto; }
+
+    /* ── BADGE / NOTIFICATION ── */
+    .badge { position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; border-radius: 50%; background: var(--red); font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
+    .notif-dot { position: relative; display: inline-block; }
+
+    /* ── ALERT ── */
+    .alert { padding: 0.9rem 1.2rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; border-left: 4px solid; }
+    .alert-success { background: rgba(62,207,142,0.1); border-color: var(--green); color: var(--green); }
+    .alert-warn { background: rgba(232,129,58,0.1); border-color: var(--accent); color: var(--accent); }
+    .alert-info { background: rgba(58,123,213,0.1); border-color: var(--accent2); color: var(--accent2); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal h2 { font-family: 'Playfair Display', serif; margin-bottom: 1.5rem; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; }
+    .modal-close:hover { color: var(--text); }
+
+    /* ── HERO (LANDING) ── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+      background: radial-gradient(ellipse at 60% 30%, rgba(232,129,58,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(58,123,213,0.08) 0%, transparent 50%);
+    }
+    .hero-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 1.5rem; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.1; margin-bottom: 1.5rem; }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+    .hero p { max-width: 520px; color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 3rem; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .type-cards { display: flex; gap: 1.5rem; margin-top: 4rem; flex-wrap: wrap; justify-content: center; }
+    .type-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 2rem; width: 220px; cursor: pointer; text-align: center; transition: all 0.25s;
+    }
+    .type-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .type-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .type-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .type-card p { font-size: 0.82rem; color: var(--muted); }
+
+    /* ── STAT STRIP ── */
+    .stats-strip { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent); }
+    .stat-lbl { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── PROFILE HEADER ── */
+    .profile-header { display: flex; align-items: center; gap: 1.5rem; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 2rem; }
+    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-family: 'Playfair Display', serif; color: #fff; flex-shrink: 0; }
+    .profile-info h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+    .profile-info p { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
+
+    /* ── AGREEMENT TIMELINE ── */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+    .tl-item { position: relative; margin-bottom: 1.5rem; }
+    .tl-dot { position: absolute; left: -2rem; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--border); }
+    .tl-dot.done { background: var(--green); border-color: var(--green); }
+    .tl-dot.active { background: var(--accent); border-color: var(--accent); }
+    .tl-label { font-weight: 600; font-size: 0.9rem; }
+    .tl-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── NOTIFICATION LIST ── */
+    .notif-item { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 0.75rem; background: var(--surface); transition: border-color 0.2s; }
+    .notif-item.unread { border-color: var(--accent); }
+    .notif-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .notif-body p { font-size: 0.88rem; }
+    .notif-time { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── STATUS BADGE ── */
+    .status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.7rem; border-radius: 20px; }
+    .status-pending { background: rgba(232,129,58,0.15); color: var(--accent); }
+    .status-accepted { background: rgba(62,207,142,0.15); color: var(--green); }
+    .status-rejected { background: rgba(232,64,64,0.15); color: var(--red); }
+
+    /* ── SECTION TITLES ── */
+    .section-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .section-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--surface); border: 1px solid var(--green); border-radius: 8px; padding: 1rem 1.5rem; min-width: 250px; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: LANDING
+═══════════════════════════════════════════ -->
+<div id="page-completar-influencer" class="page">
+  <div class="container" style="max-width:600px">
+
+    <h1>Complete seu perfil</h1>
+
+    <div class="form-group">
+      <label>Instagram</label>
+      <input type="text" id="instagram">
+    </div>
+
+    <div class="form-group">
+      <label>Tipo de Conteúdo</label>
+      <input type="text" id="tipoConteudo">
+    </div>
+
+    <div class="form-group">
+      <label>Foto URL</label>
+      <input type="text" id="fotoUrl">
+    </div>
+
+    <div class="form-group">
+      <label>Contato</label>
+      <input type="text" id="contato">
+    </div>
+
+    <button class="btn btn-primary" onclick="criarPerfilInfluencer()">
+      Finalizar Perfil
+    </button>
+
+  </div>
+
+</div>
+<div id="page-landing" class="page active">
+  <div class="hero">
+    <div class="hero-tag">🍽️ Plataforma de Marketing Gastronômico</div>
+    <h1>Conecte seu restaurante<br/>a <em>influenciadores</em> reais</h1>
+    <p>GastroLink reúne restaurantes e criadores de conteúdo para construir parcerias autênticas e impulsionar resultados.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary btn-lg" onclick="showLogin()">Entrar na plataforma</button>
+      <button class="btn btn-outline btn-lg" onclick="showRegister()">Criar conta grátis</button>
+    </div>
+    <div class="stats-strip">  
+
+</section>
+
+      <div class="stat"><div class="stat-num">320+</div><div class="stat-lbl">Restaurantes</div></div>
+      <div class="stat"><div class="stat-num">180+</div><div class="stat-lbl">Influenciadores</div></div>
+      <div class="stat"><div class="stat-num">640+</div><div class="stat-lbl">Parcerias Fechadas</div></div>
+    </div>
+    <div class="type-cards">
+      <div class="type-card" onclick="startFlow('restaurante')">
+        <div class="icon">🏪</div>
+        <h3>Sou Restaurante</h3>
+        <p>Encontre influenciadores alinhados ao meu negócio</p>
+      </div>
+      <div class="type-card" onclick="startFlow('influencer')">
+        <div class="icon">🎥</div>
+        <h3>Sou Influenciador</h3>
+        <p>Descubra restaurantes para criar conteúdo incrível</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: DASHBOARD RESTAURANTE
+═══════════════════════════════════════════ -->
+<div id="page-restaurante" class="page">
+  <nav>
+    <div class="logo">Gastro<span>Link</span></div>
+    <input class="search-box" type="text" placeholder="🔍  Buscar influenciadores…" oninput="filterInfluencers(this.value)" />
+    <div class="nav-right">
+      <div class="notif-dot">
+        <button class="btn btn-secondary" onclick="showPage('page-notif-restaurante')">🔔 Notificações</button>
+        <span class="badge">2</span>
+      </div>
+      <button class="avatar-btn" onclick="showPage('page-perfil-restaurante')">R</button>
+      <button class="btn btn-secondary" onclick="showPage('page-landing')">Sair</button>
+    </div>
+  </nav>
+</section>
+  <div class="container">
+    <div class="layout-sidebar">
+      <aside class="sidebar">
+        <h3>Filtrar por</h3>
+        <div class="form-group">
+          <label>Nicho</label>
+          <div class="filter-item"><input type="checkbox" onchange="applyFilter()" /> Gastronomia</div>
+          <div class="filter-item"><input type="checkbox" onchange="applyFilter()" /> Lifestyle</div>
+          <div class="filter-item"><input type="checkbox" onchange="applyFilter()" /> Viagens</div>
+          <div class="filter-item"><input type="checkbox" onchange="applyFilter()" /> Família</div>
+        </div>
+        <div class="form-group">
+          <label>Seguidores mínimos</label>
+          <select onchange="applyFilter()">
+            <option>Qualquer</option>
+            <option>5 mil+</option>
+            <option>10 mil+</option>
+            <option>50 mil+</option>
+            <option>100 mil+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Faixa de preço</label>
+          <select onchange="applyFilter()">
+            <option>Qualquer</option>
+            <option>Permuta</option>
+            <option>R$100–500</option>
+            <option>R$500–2k</option>
+            <option>R$2k+</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary btn-full" onclick="resetFilters()">Limpar filtros</button>
+      </aside>
+      <main>
+        <section class="featured-restaurants">
+
+    <h2>Restaurantes em destaque</h2>
+    <p>Conheça parceiros que estão crescendo com o GastroLink</p>
+
+    <div class="restaurant-gallery">
+
+      <div class="restaurant-card">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" />
+        <h3>La Bella Cucina</h3>
+        <span>Italiana • São Paulo</span>
+      </div>
+
+      <div class="restaurant-card">
+        <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9" />
+        <h3>Sushi Zen</h3>
+        <span>Japonesa • Rio de Janeiro</span>
+      </div>
+
+      <div class="restaurant-card">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" />
+        <h3>Parrilla Prime</h3>
+        <span>Carnes • Curitiba</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <div class="section-title">Restaurantes Parceiros</div>
+  <p class="section-sub">
+    Descubra restaurantes e solicite parceria para criar conteúdo
+  </p>
+
+  <div class="grid-3" id="restaurantes-grid"></div>
+        <div class="grid-3">
+
+  <div class="card">
+    <img class="card-img"
+      src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" />
+
+    <div class="card-body">
+      <div class="card-title">La Bella Cucina</div>
+      <div class="card-sub">Italiana • São Paulo</div>
+
+      <div style="margin-bottom:0.8rem">
+        <span class="tag tag-orange">Massas</span>
+        <span class="tag tag-orange">Vinhos</span>
+      </div>
+
+      <button class="btn btn-primary btn-full">
+        Solicitar parceria
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img class="card-img"
+      src="https://images.unsplash.com/photo-1552566626-52f8b828add9" />
+
+    <div class="card-body">
+      <div class="card-title">Sushi Zen</div>
+      <div class="card-sub">Japonesa • Rio de Janeiro</div>
+
+      <div style="margin-bottom:0.8rem">
+        <span class="tag tag-orange">Sushi</span>
+        <span class="tag tag-orange">Premium</span>
+      </div>
+
+      <button class="btn btn-primary btn-full">
+        Solicitar parceria
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img class="card-img"
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" />
+
+    <div class="card-body">
+      <div class="card-title">Parrilla Prime</div>
+      <div class="card-sub">Carnes • Curitiba</div>
+
+      <div style="margin-bottom:0.8rem">
+        <span class="tag tag-orange">Steakhouse</span>
+        <span class="tag tag-orange">Churrasco</span>
+      </div>
+
+      <button class="btn btn-primary btn-full">
+        Solicitar parceria
+      </button>
+    </div>
+  </div>
+
+</div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: DASHBOARD INFLUENCER
+═══════════════════════════════════════════ -->
+<div id="page-influencer" class="page">
+  <nav>
+    <div class="logo">Gastro<span>Link</span></div>
+    <input class="search-box" type="text" placeholder="🔍  Buscar restaurantes…" oninput="filterRestaurantes(this.value)" />
+    <div class="nav-right">
+      <div class="notif-dot">
+        <button class="btn btn-secondary" onclick="showPage('page-notif-influencer')">🔔 Notificações</button>
+        <span class="badge">1</span>
+      </div>
+      <button class="avatar-btn" onclick="showPage('page-perfil-influencer')">I</button>
+      <button class="btn btn-secondary" onclick="showPage('page-landing')">Sair</button>
+    </div>
+  </nav>
+</section>
+  <div class="container">
+    <div class="layout-sidebar">
+      <aside class="sidebar">
+        <h3>Filtrar por</h3>
+        <div class="form-group">
+          <label>Culinária</label>
+          <div class="filter-item"><input type="checkbox" /> Italiana</div>
+          <div class="filter-item"><input type="checkbox" /> Japonesa</div>
+          <div class="filter-item"><input type="checkbox" /> Brasileira</div>
+          <div class="filter-item"><input type="checkbox" /> Vegana</div>
+          <div class="filter-item"><input type="checkbox" /> Frutos do Mar</div>
+        </div>
+        <div class="form-group">
+          <label>Cidade</label>
+          <select>
+            <option>Qualquer</option>
+            <option>São Paulo</option>
+            <option>Rio de Janeiro</option>
+            <option>Campina Grande</option>
+            <option>Recife</option>
+          </select>
+        </div>
+      </aside>
+      <main>
+        
+        <div class="section-title">Restaurantes Parceiros</div>
+        <p class="section-sub">Descubra restaurantes e solicite parceria para criar conteúdo</p>
+        <div class="grid-3" id="restaurantes-grid"></div>
+        <div class="grid-3">
+
+  <div class="card">
+    <img class="card-img"
+      src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" />
+
+    <div class="card-body">
+      <div class="card-title">La Bella Cucina</div>
+      <div class="card-sub">Italiana • São Paulo</div>
+
+      <div style="margin-bottom:0.8rem">
+        <span class="tag tag-orange">Massas</span>
+        <span class="tag tag-orange">Vinhos</span>
+      </div>
+
+      <button class="btn btn-primary btn-full"
+onclick="abrirParceriaRestaurante(1)">
+  Solicitar parceria
+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img class="card-img"
+      src="https://images.unsplash.com/photo-1552566626-52f8b828add9" />
+
+    <div class="card-body">
+      <div class="card-title">Sushi Zen</div>
+      <div class="card-sub">Japonesa • Rio de Janeiro</div>
+
+      <div style="margin-bottom:0.8rem">
+        <span class="tag tag-orange">Sushi</span>
+        <span class="tag tag-orange">Premium</span>
+      </div>
+
+      <button class="btn btn-primary btn-full"
+onclick="abrirParceriaRestaurante(2)">
+  Solicitar parceria
+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img class="card-img"
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" />
+
+    <div class="card-body">
+      <div class="card-title">Parrilla Prime</div>
+      <div class="card-sub">Carnes • Curitiba</div>
+
+      <div style="margin-bottom:0.8rem">
+        <span class="tag tag-orange">Steakhouse</span>
+        <span class="tag tag-orange">Churrasco</span>
+      </div>
+
+      <button class="btn btn-primary btn-full"
+onclick="abrirParceriaRestaurante(2)">
+  Solicitar parceria
+</button>
+    </div>
+  </div>
+
+</div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: NOTIFICAÇÕES RESTAURANTE
+═══════════════════════════════════════════ -->
+<div id="page-notif-restaurante" class="page">
+  <nav>
+    <div class="logo">Gastro<span>Link</span></div>
+    <div class="nav-right">
+      <button class="btn btn-secondary" onclick="showPage('page-restaurante')">← Voltar</button>
+    </div>
+  </nav>
+  <div class="container" style="max-width:700px">
+    <div class="section-title">Notificações</div>
+    <p class="section-sub">Acompanhe as solicitações e acordos em andamento</p>
+    <div class="notif-item unread">
+      <div class="notif-icon">📩</div>
+      <div class="notif-body">
+        <strong>Nova solicitação de parceria</strong>
+        <p>Julia Mendes (@juliagastro) quer fechar parceria com seu restaurante. <a href="#" onclick="showModal('modal-parceria-r')" style="color:var(--accent)">Ver formulário →</a></p>
+        <div class="notif-time">Há 2 horas</div>
+      </div>
+      <span class="status status-pending">Pendente</span>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-icon">🤝</div>
+      <div class="notif-body">
+        <strong>Proposta aceita!</strong>
+        <p>Carlos Foodie (@carlosfoodie) aceitou sua proposta de parceria.</p>
+        <div class="notif-time">Ontem</div>
+      </div>
+      <span class="status status-accepted">Aceito</span>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon">📋</div>
+      <div class="notif-body">
+        <strong>Acordo formalizado</strong>
+        <p>O acordo com Ana Comida foi confirmado. Entre em contato para agendar a visita.</p>
+        <div class="notif-time">3 dias atrás</div>
+      </div>
+      <span class="status status-accepted">Concluído</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: NOTIFICAÇÕES INFLUENCER
+═══════════════════════════════════════════ -->
+<div id="page-notif-influencer" class="page">
+  <nav>
+    <div class="logo">Gastro<span>Link</span></div>
+    <div class="nav-right">
+      <button class="btn btn-secondary" onclick="showPage('page-influencer')">← Voltar</button>
+    </div>
+  </nav>
+  <div class="container" style="max-width:700px">
+    <div class="section-title">Notificações</div>
+    <p class="section-sub">Restaurantes interessados em você</p>
+    <div class="notif-item unread">
+      <div class="notif-icon">🍕</div>
+      <div class="notif-body">
+        <strong>Proposta de parceria recebida</strong>
+        <p>La Bella Cucina enviou uma proposta de R$800 + jantar para dois. <a href="#" onclick="showModal('modal-responder-influencer')" style="color:var(--accent)">Responder →</a></p>
+        <div class="notif-time">Há 1 hora</div>
+      </div>
+      <span class="status status-pending">Responder</span>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon">✅</div>
+      <div class="notif-body">
+        <strong>Parceria confirmada</strong>
+        <p>Sushi Zen confirmou o acordo. Eles entrarão em contato pelo seu e-mail cadastrado.</p>
+        <div class="notif-time">2 dias atrás</div>
+      </div>
+      <span class="status status-accepted">Confirmado</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: PERFIL RESTAURANTE
+═══════════════════════════════════════════ -->
+<div id="page-perfil-restaurante" class="page">
+  <nav>
+    <div class="logo">Gastro<span>Link</span></div>
+    <div class="nav-right">
+      <button class="btn btn-secondary" onclick="showPage('page-restaurante')">← Voltar</button>
+    </div>
+  </nav>
+  <div class="container" style="max-width:700px">
+    <div class="profile-header">
+      <div class="profile-avatar">R</div>
+      <div class="profile-info">
+        <h2 id="perfil-nome-r">Meu Restaurante</h2>
+        <p id="perfil-tipo-r">Culinária Italiana · São Paulo, SP</p>
+        <span class="status status-accepted">✓ Perfil verificado</span>
+      </div>
+    </div>
+    <div class="card" style="padding:1.5rem; margin-bottom:1.5rem;">
+      <h3 style="font-family:'Playfair Display',serif; margin-bottom:1rem;">Editar Perfil</h3>
+      <div class="form-group"><label>Nome do Restaurante</label><input id="edit-nome-r" type="text" placeholder="Ex: La Bella Cucina" /></div>
+      <div class="form-group"><label>Endereço</label><input type="text" placeholder="Rua, número, cidade" /></div>
+      <div class="form-group"><label>Bio / Descrição</label><textarea placeholder="Conte a história do seu restaurante..."></textarea></div>
+      <div class="form-group"><label>Site</label><input type="url" placeholder="https://seurestaurante.com.br" /></div>
+      <div class="form-group"><label>E-mail de contato</label><input type="email" placeholder="contato@restaurante.com" /></div>
+      <div class="form-group"><label>Redes sociais</label><input type="text" placeholder="@instagram, @tiktok" /></div>
+      <button class="btn btn-primary btn-full" onclick="salvarPerfil()">Salvar alterações</button>
+    </div>
+    <div class="card" style="padding:1.5rem">
+      <h3 style="font-family:'Playfair Display',serif; margin-bottom:1rem;">Histórico de Parcerias</h3>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-label">Ana Comida — Acordo fechado</div><div class="tl-sub">Maio 2025 · Post publicado ✓</div></div>
+        <div class="tl-item"><div class="tl-dot active"></div><div class="tl-label">Carlos Foodie — Em andamento</div><div class="tl-sub">Aguardando visita agendada</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Julia Mendes — Proposta enviada</div><div class="tl-sub">Aguardando resposta</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: PERFIL INFLUENCER
+═══════════════════════════════════════════ -->
+<div id="page-perfil-influencer" class="page">
+  <nav>
+    <div class="logo">Gastro<span>Link</span></div>
+    <div class="nav-right">
+      <button class="btn btn-secondary" onclick="showPage('page-influencer')">← Voltar</button>
+    </div>
+  </nav>
+  <div class="container" style="max-width:700px">
+    <div class="profile-header">
+      <div class="profile-avatar" style="background:var(--accent2)">I</div>
+      <div class="profile-info">
+        <h2 id="perfil-nome-i">Meu Perfil</h2>
+        <p id="perfil-nicho-i">Gastronomia & Lifestyle · 45k seguidores</p>
+        <span class="status status-accepted">✓ Perfil verificado</span>
+      </div>
+    </div>
+    <div class="card" style="padding:1.5rem; margin-bottom:1.5rem;">
+      <h3 style="font-family:'Playfair Display',serif; margin-bottom:1rem;">Editar Perfil</h3>
+      <div class="form-group"><label>Nome / Apelido</label><input type="text" placeholder="Como quer ser chamado(a)" /></div>
+      <div class="form-group"><label>Bio</label><textarea placeholder="Conte sobre você e seu conteúdo..."></textarea></div>
+      <div class="form-group"><label>Foto de perfil (URL)</label><input type="url" placeholder="https://..." /></div>
+      <div class="form-group"><label>E-mail de contato</label><input type="email" placeholder="seuemail@exemplo.com" /></div>
+      <div class="form-group"><label>Redes sociais</label><input type="text" placeholder="@instagram, @tiktok, @youtube" /></div>
+      <div class="form-group"><label>Faixa de preço</label>
+        <select>
+          <option>Permuta (apenas jantar)</option>
+          <option>R$100 – R$500</option>
+          <option>R$500 – R$2.000</option>
+          <option>R$2.000+</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="salvarPerfil()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════ -->
+
+<!-- Modal: Login -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+    <h2>Entrar na plataforma</h2>
+    <div class="form-group">
+      <label>Tipo de conta</label>
+      <select id="login-tipo">
+        <option value="restaurante">🏪 Restaurante</option>
+        <option value="influencer">🎥 Influenciador</option>
+      </select>
+    </div>
+    <div class="form-group"><label>E-mail</label><input type="email" placeholder="seu@email.com" /></div>
+    <div class="form-group"><label>Senha</label><input type="password" placeholder="••••••••" /></div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()" style="margin-top:0.5rem">Entrar</button>
+    <div class="divider"></div>
+    <p style="text-align:center;font-size:0.85rem;color:var(--muted)">Não tem conta? <a href="#" onclick="switchToRegister()" style="color:var(--accent)">Cadastre-se grátis</a></p>
+  </div>
+</div>
+
+<!-- Modal: Cadastro -->
+<div class="modal-overlay" id="modal-register">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-register')">✕</button>
+    <h2>Criar sua conta</h2>
+    <div class="form-group">
+      <label>Tipo de conta</label>
+      <select id="register-tipo">
+        <option value="restaurante">🏪 Sou um Restaurante</option>
+        <option value="influencer">🎥 Sou Influenciador(a)</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Nome</label><input type="text" id="reg-nome" placeholder="Nome do restaurante ou apelido" /></div>
+    <div class="form-group"><label>E-mail</label><input type="email" placeholder="seu@email.com" /></div>
+    <div class="form-group"><label>Senha</label><input type="password" placeholder="Mínimo 8 caracteres" /></div>
+    <button class="btn btn-success btn-full btn-lg" onclick="doRegister()" style="margin-top:0.5rem">Criar conta</button>
+    <div class="divider"></div>
+    <p style="text-align:center;font-size:0.85rem;color:var(--muted)">Já tem conta? <a href="#" onclick="switchToLogin()" style="color:var(--accent)">Entrar</a></p>
+  </div>
+</div>
+
+<!-- Modal: Solicitar Parceria (Influencer → Restaurante) -->
+<div class="modal-overlay" id="modal-parceria-i">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-parceria-i')">✕</button>
+    <h2>Solicitar Parceria</h2>
+    <div id="modal-rest-nome" style="font-size:0.9rem;color:var(--muted);margin-bottom:1.5rem"></div>
+    <div class="form-group"><label>Apresentação</label><textarea placeholder="Conte sobre você, seu canal e por que quer fazer parceria com este restaurante..."></textarea></div>
+    <div class="form-group"><label>Proposta de conteúdo</label><textarea placeholder="Ex: Post no feed + 2 stories + reels de 60s apresentando o cardápio..."></textarea></div>
+    <div class="form-group"><label>Faixa de preço / Modelo</label>
+      <select>
+        <option>Permuta (jantar para dois)</option>
+        <option>R$100 – R$500</option>
+        <option>R$500 – R$2.000</option>
+        <option>R$2.000+</option>
+        <option>A negociar</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Contato (e-mail ou @)</label><input type="text" placeholder="seuemail@exemplo.com ou @instagram" /></div>
+    <div class="form-group"><label>Redes sociais</label><input type="text" placeholder="@tiktok, @instagram, @youtube" /></div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="enviarParceria()">Enviar Solicitação</button>
+  </div>
+</div>
+
+<!-- Modal: Ver solicitação (Restaurante recebe de influencer) -->
+<div class="modal-overlay" id="modal-parceria-r">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-parceria-r')">✕</button>
+    <h2>Solicitação de Parceria</h2>
+    <div class="alert alert-info">Julia Mendes (@juliagastro) quer fechar parceria com você.</div>
+    <p style="font-size:0.9rem;margin-bottom:1rem"><strong>Apresentação:</strong> Sou criadora de conteúdo gastronômico com 45k seguidores no Instagram, especializada em restaurantes italianos e bistrôs. Faço reels que geram alta conversão.</p>
+    <p style="font-size:0.9rem;margin-bottom:1rem"><strong>Proposta:</strong> 1 Reel no Instagram + 3 Stories + menção no TikTok, com foco no menu do jantar.</p>
+    <p style="font-size:0.9rem;margin-bottom:1rem"><strong>Faixa de preço:</strong> <span class="tag tag-orange">R$500 – R$2.000</span></p>
+    <p style="font-size:0.9rem;margin-bottom:1.5rem"><strong>Contato:</strong> julia@gastro.com / @juliagastro</p>
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn btn-success" onclick="responderParceria('aceitar')" style="flex:1">✓ Aceitar</button>
+      <button class="btn btn-danger" onclick="responderParceria('recusar')" style="flex:1">✕ Recusar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Responder proposta (Influencer recebe de restaurante) -->
+<div class="modal-overlay" id="modal-responder-influencer">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-responder-influencer')">✕</button>
+    <h2>Proposta Recebida</h2>
+    <div class="alert alert-info">La Bella Cucina enviou uma proposta para você.</div>
+    <p style="font-size:0.9rem;margin-bottom:1rem"><strong>Proposta:</strong> Reel + Stories apresentando o novo cardápio de verão.</p>
+    <p style="font-size:0.9rem;margin-bottom:1rem"><strong>Valor oferecido:</strong> <span class="tag tag-green">R$800 + jantar para dois</span></p>
+    <p style="font-size:0.9rem;margin-bottom:1.5rem"><strong>Contato do restaurante:</strong> labella@restaurante.com / @labellacucina</p>
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn btn-success" onclick="responderInfluencer('aceitar')" style="flex:1">✓ Aceitar proposta</button>
+      <button class="btn btn-danger" onclick="responderInfluencer('recusar')" style="flex:1">✕ Recusar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Ação realizada com sucesso!</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+const INFLUENCERS = [
+  {
+    id: 1,
+    nome: "Julia Mendes",
+    apelido: "@juliagastro",
+    seguidores: "45k",
+    nicho: "Gastronomia",
+    preco: "R$500",
+    emoji: "🎥",
+    tags: ["Reels", "Instagram"]
+  }
+];
+
+const RESTAURANTES = [
+  {
+    id: 1,
+    nome: "La Bella Cucina",
+    tipo: "Italiana",
+    cidade: "São Paulo",
+    emoji: "🍝",
+    tags: ["Massas", "Vinhos"]
+  }
+];
+
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+function goHome(role) {
+}
+let currentInfluencer = null;
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function showLogin() { showModal('modal-login'); }
+function showRegister() { showModal('modal-register'); }
+
+function startFlow(tipo) {
+  if (tipo === 'restaurante') {
+    showModal('modal-login');
+    document.getElementById('login-tipo').value = 'restaurante';
+  } else {
+    showModal('modal-login');
+    document.getElementById('login-tipo').value = 'influencer';
+  }
+  function switchToRegister() {
+  closeModal('modal-login');
+  showModal('modal-register');
+}
+}
+
+// ═══════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════
+async function criarPerfilInfluencer() {
+
+  const token = localStorage.getItem("token");
+
+  try {
+
+    const resposta = await fetch("https://localhost:7212/api/Influencer", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+
+      body: JSON.stringify({
+        instagram: document.getElementById("instagram").value,
+        tipoConteudo: document.getElementById("tipoConteudo").value,
+        fotoUrl: document.getElementById("fotoUrl").value,
+        contato: document.getElementById("contato").value
+      })
+
+    });
+
+    const dados = await resposta.json();
+
+    localStorage.setItem("token", dados.token);
+
+    closeModal('modal-login');
+
+    if (dados.usuario.role === "Restaurante") {
+      showPage("page-restaurante");
+      return;
+    }
+
+    if (dados.usuario.role === "Influencer") {
+
+      if (dados.temPerfilInfluencer) {
+        showPage("page-influencer");
+      } else {
+        showPage("page-completar-influencer");
+      }
+
+      return;
+    }
+
+  } catch (erro) {
+    console.error("Erro:", erro);
+  }
+}
+
+async function doLogin() {
+  try {
+    const email = document.querySelector('#modal-login input[type="email"]').value;
+    const senha = document.querySelector('#modal-login input[type="password"]').value;
+
+    const resposta = await fetch("https://localhost:7212/api/Auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha })
+    });
+
+    let dados;
+
+    try {
+      dados = await resposta.json();
+    } catch (e) {
+      dados = null;
+    }
+
+    if (!resposta.ok || !dados) {
+      showToast("❌ Login inválido");
+      return;
+    }
+
+    // fecha modal
+    closeModal("modal-login");
+
+    // salva token e role
+    localStorage.setItem("token", dados.token);
+    localStorage.setItem("role", dados.role);
+
+    // normaliza role
+    const role = (dados.role || "").trim().toLowerCase();
+
+    console.log("ROLE:", role);
+
+    // RESTAURANTE
+    if (role === "restaurante") {
+      showPage("page-restaurante");
+
+      // se não tiver array, evita crash
+      if (typeof INFLUENCERS !== "undefined") {
+        renderInfluencers(INFLUENCERS);
+      }
+
+      showToast("✅ Login como Restaurante");
+      return;
+    }
+
+    // INFLUENCER
+    if (role === "influencer") {
+      showPage("page-influencer");
+
+      if (typeof RESTAURANTES !== "undefined") {
+        renderRestaurantes(RESTAURANTES);
+      }
+
+      showToast("✅ Login como Influenciador");
+      return;
+    }
+
+    // fallback
+    showToast("❌ Role não reconhecida: " + dados.role);
+
+  } catch (erro) {
+    console.error("ERRO LOGIN:", erro);
+    showToast("Erro ao conectar com API");
+  }
+}
+async function doRegister() {
+
+  const nome = document.getElementById("reg-nome").value;
+  const email = document.querySelector('#modal-register input[type="email"]').value;
+  const senha = document.querySelector('#modal-register input[type="password"]').value;
+  const tipo = document.getElementById("register-tipo").value;
+
+  try {
+
+  const resposta = await fetch("https://localhost:7212/api/Auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nome: nome,
+      email: email,
+      senha: senha,
+      role: tipo
+    })
+  });
+  
+  
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+
+    console.log(dados);
+
+    // pega os erros do ModelState
+    if (dados.errors) {
+
+      const mensagens = Object.values(dados.errors)
+        .flat()
+        .join(" | ");
+
+      showToast("❌ " + mensagens);
+
+    } else {
+
+      showToast("❌ Erro ao cadastrar");
+
+    }
+
+    return;
+  }
+
+  console.log(dados);
+
+  showToast("✅ Conta criada!");
+  closeModal("modal-register");
+
+} catch (erro) {
+
+  console.log(erro);
+  showToast("Erro ao conectar com API");
+
+}
+}
+// ═══════════════════════════════════════
+// RENDER CARDS
+// ═══════════════════════════════════════
+function renderInfluencers(list) {
+  const grid = document.getElementById('influencers-grid');
+  grid.innerHTML = list.map(i => `
+    <div class="card">
+      <div class="card-img">${i.emoji}</div>
+      <div class="card-body">
+        <div class="card-title">${i.nome}</div>
+        <div class="card-sub">${i.apelido} · ${i.seguidores} seguidores</div>
+        <div style="margin-bottom:0.8rem">
+          <span class="tag tag-blue">${i.nicho}</span>
+          ${i.tags.map(t=>`<span class="tag tag-orange">${t}</span>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="tag tag-green">${i.preco}</span>
+          <button class="btn btn-primary" onclick="abrirParceriaInfluencer(${i.id})">Solicitar parceria</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRestaurantes(list) {
+  const grid = document.getElementById('restaurantes-grid');
+  grid.innerHTML = list.map(r => `
+    <div class="card">
+      <div class="card-img">${r.emoji}</div>
+      <div class="card-body">
+        <div class="card-title">${r.nome}</div>
+        <div class="card-sub">${r.tipo} · ${r.cidade}</div>
+        <div style="margin-bottom:0.8rem">
+          ${r.tags.map(t=>`<span class="tag tag-orange">${t}</span>`).join('')}
+        </div>
+        <button class="btn btn-primary btn-full" onclick="abrirParceriaRestaurante(${r.id})">Solicitar parceria</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// PARCERIA FLOW
+// ═══════════════════════════════════════
+function abrirParceriaInfluencer(id) {
+  const inf = INFLUENCERS.find(i => i.id === id);
+  currentInfluencer = inf;
+  document.getElementById('modal-rest-nome').innerHTML =
+    `<strong>Para:</strong> ${inf.nome} (${inf.apelido})`;
+  showModal('modal-parceria-i');
+}
+
+function abrirParceriaRestaurante(id) {
+  const rest = RESTAURANTES.find(r => r.id === id);
+  showModal('modal-parceria-i');
+  document.getElementById('modal-rest-nome').innerHTML =
+    `<strong>Para:</strong> ${rest.nome} — ${rest.tipo}`;
+}
+
+function enviarParceria() {
+  closeModal('modal-parceria-i');
+  showToast('✅ Solicitação enviada! O restaurante será notificado.');
+}
+
+function responderParceria(acao) {
+  closeModal('modal-parceria-r');
+  if (acao === 'aceitar') {
+    showToast('✅ Parceria aceita! O influenciador será notificado para entrar em contato.');
+  } else {
+    showToast('Proposta recusada. O influenciador foi notificado.');
+  }
+}
+
+function responderInfluencer(acao) {
+  closeModal('modal-responder-influencer');
+  if (acao === 'aceitar') {
+    showToast('✅ Proposta aceita! O restaurante entrará em contato pelo seu e-mail.');
+  } else {
+    showToast('Proposta recusada. O restaurante foi notificado.');
+  }
+}
+
+// ═══════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════
+function filterInfluencers(query) {
+  const q = query.toLowerCase();
+  const filtered = q ? INFLUENCERS.filter(i =>
+    i.nome.toLowerCase().includes(q) ||
+    i.apelido.toLowerCase().includes(q) ||
+    i.nicho.toLowerCase().includes(q) ||
+    i.tags.some(t => t.toLowerCase().includes(q))
+  ) : INFLUENCERS;
+  renderInfluencers(filtered);
+}
+
+function filterRestaurantes(query) {
+  const q = query.toLowerCase();
+  const filtered = q ? RESTAURANTES.filter(r =>
+    r.nome.toLowerCase().includes(q) ||
+    r.tipo.toLowerCase().includes(q) ||
+    r.cidade.toLowerCase().includes(q) ||
+    r.tags.some(t => t.toLowerCase().includes(q))
+  ) : RESTAURANTES;
+  renderRestaurantes(filtered);
+}
+
+function applyFilter() { /* Placeholder para filtros avançados */ }
+function resetFilters() {
+  renderInfluencers(INFLUENCERS);
+  document.querySelectorAll('.filter-item input').forEach(i => i.checked = false);
+  showToast('Filtros resetados');
+}
+
+// ═══════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════
+function salvarPerfil() {
+  showToast('✅ Perfil atualizado com sucesso!');
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
